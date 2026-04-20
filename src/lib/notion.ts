@@ -146,6 +146,7 @@ function toTier(s: string): Tier {
 
 function mapPublication(page: { properties: NotionProperties }): Publication {
   const p = page.properties;
+  const pdfUrl = urlProp(p, 'PDF URL');
   return {
     title: title(p, 'Title'),
     publisher: select(p, 'Publisher'),
@@ -154,7 +155,8 @@ function mapPublication(page: { properties: NotionProperties }): Publication {
     country: requiredMultiSelect(p, 'Country Scope'),
     tier: toTier(select(p, 'Tier')),
     url: urlProp(p, 'URL'),
-    pdf: Boolean(urlProp(p, 'PDF URL')),
+    ...(pdfUrl ? { pdfUrl } : {}),
+    pdf: Boolean(pdfUrl),
   };
 }
 

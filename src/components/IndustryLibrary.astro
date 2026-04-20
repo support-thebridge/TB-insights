@@ -58,7 +58,11 @@ const V_LABEL: Record<string, string> = { v1: 'V1', v2: 'V2', v3: 'V3', v4: 'V4'
       {publications.map((p) => (
         <div class="lib-row">
           <div>
-            <a href={p.url ?? '#'} class="lib-title">{p.title}</a>
+            {p.url ? (
+              <a href={p.url} class="lib-title" target="_blank" rel="noopener">{p.title}</a>
+            ) : (
+              <span class="lib-title">{p.title}</span>
+            )}
             <div class="lib-chips">
               {p.vectors.map((v) => <span class={`chip ${v}`}>{V_LABEL[v]}</span>)}
               {p.country.map((c) => <span class="chip">{c}</span>)}
@@ -71,8 +75,16 @@ const V_LABEL: Record<string, string> = { v1: 'V1', v2: 'V2', v3: 'V3', v4: 'V4'
           <div class="lib-date lib-cell-hide-sm">{p.date}</div>
           <div></div>
           <div class="lib-actions">
-            <button class="lib-btn">Ver original</button>
-            <button class="lib-btn primary" disabled={!p.pdf}>PDF</button>
+            {p.url ? (
+              <a href={p.url} class="lib-btn" target="_blank" rel="noopener">Ver original</a>
+            ) : (
+              <span class="lib-btn" aria-disabled="true" style="opacity:0.35;cursor:not-allowed;">Ver original</span>
+            )}
+            {p.pdfUrl ? (
+              <a href={p.pdfUrl} class="lib-btn primary" target="_blank" rel="noopener">PDF</a>
+            ) : (
+              <span class="lib-btn primary" aria-disabled="true" style="opacity:0.35;cursor:not-allowed;">PDF</span>
+            )}
           </div>
         </div>
       ))}

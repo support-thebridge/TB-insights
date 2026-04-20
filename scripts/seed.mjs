@@ -3,16 +3,16 @@
 // the build is token-agnostic. If you change this file, also update the mappers.
 
 export const publications = [
-  { title: 'Employment Outlook Survey Q2 2026', publisher: 'ManpowerGroup', vectors: ['v1'], country: ['Global', 'España'], tier: 'A', date: '2026-04-08', pdf: true },
-  { title: 'AI Jobs Barometer 2026', publisher: 'PwC', vectors: ['v2', 'v3'], country: ['Global'], tier: 'A', date: '2026-04-02', pdf: true },
-  { title: 'Employment Outlook 2026, cap. 3 — Generative AI and the Labour Market', publisher: 'OECD', vectors: ['v3'], country: ['EU', 'Global'], tier: 'A', date: '2026-04-04', pdf: true },
-  { title: 'Tech hiring pulse — Europe & US, March 2026', publisher: 'LinkedIn Economic Graph', vectors: ['v1'], country: ['US', 'EU'], tier: 'B', date: '2026-03-31', pdf: false },
-  { title: 'OES National Occupational Employment and Wages 2025', publisher: 'BLS', vectors: ['v2'], country: ['US'], tier: 'A', date: '2026-03-22', pdf: true },
-  { title: 'Future of Jobs Report 2025 — Reskilling Revolution tracker', publisher: 'WEF', vectors: ['v3', 'v4'], country: ['Global'], tier: 'A', date: '2026-02-28', pdf: true },
-  { title: 'LFS Q4 2025 · ICT wage growth series', publisher: 'Eurostat', vectors: ['v2'], country: ['EU'], tier: 'A', date: '2026-03-14', pdf: false },
-  { title: 'State of AI hiring in Spain — Q1 2026', publisher: 'Fundación COTEC', vectors: ['v1', 'v3'], country: ['España'], tier: 'B', date: '2026-03-09', pdf: true },
-  { title: 'Talent shortage 2026 — G20 findings', publisher: 'ManpowerGroup', vectors: ['v1', 'v4'], country: ['Global'], tier: 'A', date: '2026-02-18', pdf: true },
-  { title: 'Generative AI and productivity — field experiments', publisher: 'MIT CSAIL', vectors: ['v3'], country: ['US'], tier: 'B', date: '2026-02-05', pdf: true },
+  { title: 'Employment Outlook Survey Q2 2026', publisher: 'ManpowerGroup', vectors: ['v1'], country: ['Global', 'España'], tier: 'A', date: '2026-04-08', url: 'https://example.com/manpowergroup', pdfUrl: 'https://example.com/manpowergroup.pdf', pdf: true },
+  { title: 'AI Jobs Barometer 2026', publisher: 'PwC', vectors: ['v2', 'v3'], country: ['Global'], tier: 'A', date: '2026-04-02', url: 'https://example.com/pwc', pdfUrl: 'https://example.com/pwc.pdf', pdf: true },
+  { title: 'Employment Outlook 2026, cap. 3 — Generative AI and the Labour Market', publisher: 'OECD', vectors: ['v3'], country: ['EU', 'Global'], tier: 'A', date: '2026-04-04', url: 'https://example.com/oecd', pdfUrl: 'https://example.com/oecd.pdf', pdf: true },
+  { title: 'Tech hiring pulse — Europe & US, March 2026', publisher: 'LinkedIn Economic Graph', vectors: ['v1'], country: ['US', 'EU'], tier: 'B', date: '2026-03-31', url: 'https://example.com/linkedin', pdf: false },
+  { title: 'OES National Occupational Employment and Wages 2025', publisher: 'BLS', vectors: ['v2'], country: ['US'], tier: 'A', date: '2026-03-22', url: 'https://example.com/bls', pdfUrl: 'https://example.com/bls.pdf', pdf: true },
+  { title: 'Future of Jobs Report 2025 — Reskilling Revolution tracker', publisher: 'WEF', vectors: ['v3', 'v4'], country: ['Global'], tier: 'A', date: '2026-02-28', url: 'https://example.com/wef', pdfUrl: 'https://example.com/wef.pdf', pdf: true },
+  { title: 'LFS Q4 2025 · ICT wage growth series', publisher: 'Eurostat', vectors: ['v2'], country: ['EU'], tier: 'A', date: '2026-03-14', url: 'https://example.com/eurostat', pdf: false },
+  { title: 'State of AI hiring in Spain — Q1 2026', publisher: 'Fundación COTEC', vectors: ['v1', 'v3'], country: ['España'], tier: 'B', date: '2026-03-09', url: 'https://example.com/cotec', pdfUrl: 'https://example.com/cotec.pdf', pdf: true },
+  { title: 'Talent shortage 2026 — G20 findings', publisher: 'ManpowerGroup', vectors: ['v1', 'v4'], country: ['Global'], tier: 'A', date: '2026-02-18', url: 'https://example.com/manpower-g20', pdfUrl: 'https://example.com/manpower-g20.pdf', pdf: true },
+  { title: 'Generative AI and productivity — field experiments', publisher: 'MIT CSAIL', vectors: ['v3'], country: ['US'], tier: 'B', date: '2026-02-05', url: 'https://example.com/mit', pdfUrl: 'https://example.com/mit.pdf', pdf: true },
 ];
 
 // Narrow BiweeklyNotionData — what Notion actually provides. Static framing

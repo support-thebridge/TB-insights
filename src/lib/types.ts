@@ -10,6 +10,7 @@ export interface Publication {
   tier: Tier;
   date: string;
   url?: string;
+  pdfUrl?: string;
   pdf: boolean;
 }
 
