@@ -1,0 +1,49 @@
+---
+import { digest } from '../data';
+
+const vectorLabels: Record<string, string> = {
+  v1: 'V1 · Demanda',
+  v2: 'V2 · Salarios',
+  v3: 'V3 · AI Impact',
+  v4: 'V4 · Training',
+};
+---
+<section class="section" id="digest">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-kicker"><span class="num">02</span><span>Digest · quincena {digest.issue}</span></div>
+        <h2 class="section-title">{digest.sectionHeadline}</h2>
+      </div>
+      <p class="section-aside">{digest.sectionAside}</p>
+    </div>
+
+    <p class="digest-headline reveal">{digest.digestHeadline}</p>
+
+    <div class="digest-grid">
+      {digest.findings.map((f, i) => (
+        <article class={`digest-col ${f.vector} reveal${i > 0 ? ` d${i}` : ''}`}>
+          <span class="line"></span>
+          <span class="v-chip"><span class="sq"></span>{vectorLabels[f.vector]}</span>
+          <div class="digest-stat">{f.stat}<span class="unit">{f.statUnit}</span></div>
+          <h3 class="digest-finding">{f.finding}</h3>
+          <p class="digest-body">{f.body}</p>
+          <div class="digest-cite">
+            Fuente · <a href={f.sourceUrl ?? '#'}>{f.sourceLabel}</a>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="digest-callout reveal">
+      <span class="tag">{digest.callout.tag}</span>
+      <p class="text" set:html={digest.callout.text.replace(/“([^”]+)”/, '<em>&ldquo;$1&rdquo;</em>')}></p>
+      <a href={digest.callout.linkUrl ?? '#'} class="link">
+        {digest.callout.linkLabel}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 17L17 7M9 7h8v8" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

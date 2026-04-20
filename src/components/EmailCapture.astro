@@ -1,0 +1,22 @@
+---
+---
+<form
+  class="foot-capture"
+  action="/api/subscribe"
+  method="post"
+  data-email-capture
+>
+  <input type="email" name="email" placeholder="tu@empresa.com" required autocomplete="email" />
+  <button type="submit">Suscribir</button>
+</form>
+
+<script is:inline>
+  const form = document.querySelector('[data-email-capture]');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button');
+      if (btn) btn.textContent = '✓ Inscrito';
+    });
+  }
+</script>

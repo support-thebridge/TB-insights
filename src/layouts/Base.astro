@@ -1,0 +1,84 @@
+---
+import '../styles/tokens.css';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'The Bridge Insights',
+  description =
+    'Una tesis por ciclo, cuatro vectores, una fuente citable. Leemos, filtramos y sintetizamos cada quincena los informes que definen el mercado laboral tecnológico.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&display=swap"
+    />
+  </head>
+  <body>
+    <slot />
+
+    <script is:inline>
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('visible');
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.12 }
+      );
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+      if (!reduce) {
+        const orbs = document.querySelectorAll('.hero-orb');
+        let y = 0;
+        let ty = 0;
+        const raf = () => {
+          ty += (y - ty) * 0.08;
+          orbs.forEach((o) => {
+            const k = parseFloat(o.getAttribute('data-parallax') || '0.2');
+            o.style.transform = `translate3d(0, ${ty * k}px, 0)`;
+          });
+          requestAnimationFrame(raf);
+        };
+        window.addEventListener('scroll', () => { y = window.scrollY; }, { passive: true });
+        raf();
+      }
+
+      const filters = document.getElementById('dash-filters');
+      if (filters) {
+        filters.addEventListener('click', (e) => {
+          const target = e.target instanceof Element ? e.target.closest('.dash-filter') : null;
+          if (!target) return;
+          const v = target.getAttribute('data-v');
+          filters.querySelectorAll('.dash-filter').forEach((b) => b.classList.remove('active'));
+          target.classList.add('active');
+          document.querySelectorAll('#dash-body tr').forEach((row) => {
+            const rv = row.getAttribute('data-v');
+            row.classList.toggle('hidden', v !== 'all' && rv !== v);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

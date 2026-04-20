@@ -1,0 +1,89 @@
+---
+import { libraryMeta, publications } from '../data';
+
+const V_LABEL: Record<string, string> = { v1: 'V1', v2: 'V2', v3: 'V3', v4: 'V4' };
+---
+<section class="section" id="library">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-kicker"><span class="num">05</span><span>Industry library</span></div>
+        <h2 class="section-title">La fuente detrás de cada tesis.</h2>
+      </div>
+      <p class="section-aside">
+        Mirror público de nuestra base Notion. {libraryMeta.total} publicaciones vigentes,
+        {libraryMeta.addedThisCycle} añadidas esta quincena. Filtros por vector, publisher, país y tier.
+      </p>
+    </div>
+
+    <div class="lib-head reveal">
+      <div class="lib-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--ins-fg-3)">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4.3-4.3" />
+        </svg>
+        <input type="search" placeholder="Buscar por título, publisher, país…" />
+      </div>
+      <select class="lib-select" aria-label="Publisher">
+        <option>Publisher · todos</option>
+        <option>ManpowerGroup</option>
+        <option>OECD</option>
+        <option>LinkedIn Economic Graph</option>
+        <option>PwC</option>
+        <option>WEF</option>
+        <option>BLS</option>
+        <option>Eurostat</option>
+      </select>
+      <select class="lib-select" aria-label="Vector">
+        <option>Vector · todos</option>
+        <option>V1 · Demand</option>
+        <option>V2 · Salaries</option>
+        <option>V3 · AI Impact</option>
+        <option>V4 · Training</option>
+      </select>
+      <select class="lib-select" aria-label="Tier">
+        <option>Tier · todos</option>
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+      </select>
+    </div>
+
+    <div class="lib-results-meta">
+      <span>{libraryMeta.total} publicaciones · ordenadas por fecha desc</span>
+      <span>Página {libraryMeta.page} / {libraryMeta.totalPages}</span>
+    </div>
+
+    <div class="lib-list reveal">
+      {publications.map((p) => (
+        <div class="lib-row">
+          <div>
+            <a href={p.url ?? '#'} class="lib-title">{p.title}</a>
+            <div class="lib-chips">
+              {p.vectors.map((v) => <span class={`chip ${v}`}>{V_LABEL[v]}</span>)}
+              {p.country.map((c) => <span class="chip">{c}</span>)}
+            </div>
+          </div>
+          <div class="lib-publisher lib-cell-hide-sm">{p.publisher}</div>
+          <div class="lib-chips lib-cell-hide-sm">
+            <span class={`chip tier-${p.tier.toLowerCase()}`}>Tier {p.tier}</span>
+          </div>
+          <div class="lib-date lib-cell-hide-sm">{p.date}</div>
+          <div></div>
+          <div class="lib-actions">
+            <button class="lib-btn">Ver original</button>
+            <button class="lib-btn primary" disabled={!p.pdf}>PDF</button>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="lib-pager reveal">
+      <span>Mostrando {libraryMeta.showing}</span>
+      <div class="pg-btns">
+        <button class="lib-btn" disabled>← Anterior</button>
+        <button class="lib-btn">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+</section>

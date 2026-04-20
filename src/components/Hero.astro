@@ -1,0 +1,42 @@
+---
+import { digest } from '../data';
+---
+<header class="hero">
+  <div class="hero-bg">
+    <div class="hero-orb a" data-parallax="0.15"></div>
+    <div class="hero-orb b" data-parallax="0.25"></div>
+  </div>
+
+  <div class="container hero-inner">
+    <span class="eyebrow"><span class="dot"></span>Insight #{String(digest.issue).padStart(2, '0')} · {digest.dateLabel}</span>
+
+    <h1 class="thesis reveal">
+      El empleo tech ya no sube en bloque.<br />
+      Se <span class="em">bifurca</span> por <span class="u">exposición a la IA</span>.
+    </h1>
+
+    <p class="thesis-sub reveal d1">{digest.thesisSub}</p>
+
+    <div class="hero-ctas reveal d2">
+      <a href="#digest" class="btn btn-primary">
+        Lee el digest de esta quincena
+        <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M13 5l7 7-7 7" />
+        </svg>
+      </a>
+      <a href="#subscribe" class="btn btn-ghost">Suscríbete al digest</a>
+    </div>
+  </div>
+
+  <div class="container hero-meta reveal d3">
+    <div class="hero-live">
+      <span class="label">{digest.liveReadout.label}</span>
+      <span class="val">
+        {digest.liveReadout.value}
+        {digest.liveReadout.valueAccent && <span class="up"> {digest.liveReadout.valueAccent}</span>}
+      </span>
+      <span class="src">{digest.liveReadout.source}</span>
+    </div>
+    <span class="hero-scroll">Scroll</span>
+  </div>
+</header>

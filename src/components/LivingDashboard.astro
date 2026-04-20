@@ -1,0 +1,103 @@
+---
+import { metrics } from '../data';
+import type { Metric } from '../lib/types';
+
+const V_LABEL: Record<string, string> = { v1: 'V1', v2: 'V2', v3: 'V3', v4: 'V4' };
+const V_CSS: Record<string, string> = { v1: 'var(--v1)', v2: 'var(--v2)', v3: 'var(--v3)', v4: 'var(--v4)' };
+
+function fmt(val: number, unit: Metric['unit']): string {
+  if (unit === 'USD') return '$' + val.toLocaleString('en-US');
+  if (unit === 'M') return val + 'M';
+  if (unit === 'pp') return (val > 0 ? '+' : '') + val + 'pp';
+  if (unit === '%') return (Number.isInteger(val) ? val : val.toFixed(1)) + '%';
+  return String(val);
+}
+
+function deltaClass(d: number): 'up' | 'down' | 'flat' {
+  return d > 0 ? 'up' : d < 0 ? 'down' : 'flat';
+}
+
+function deltaValue(d: number): string {
+  const prefix = d > 0 ? '+' : '';
+  return prefix + (Number.isInteger(d) ? d : d.toFixed(1));
+}
+
+function deltaUnit(m: Metric): string {
+  return m.unitDelta ?? (m.unit === 'USD' ? '%' : m.unit);
+}
+---
+<section class="section" id="dashboard">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-kicker"><span class="num">03</span><span>Living dashboard · 10 métricas</span></div>
+        <h2 class="section-title">Los números que vigilamos, fuente por fuente.</h2>
+      </div>
+      <p class="section-aside">
+        Actualizado cuando una publicación Tier A/B trae una lectura nueva. El delta
+        compara con la última lectura publicada de la misma serie, no con el ciclo anterior.
+      </p>
+    </div>
+
+    <div class="dash-filters reveal" id="dash-filters">
+      <button class="dash-filter active" data-v="all">All</button>
+      <button class="dash-filter" data-v="v1"><span class="sq" style="background:var(--v1)"></span>V1 Demand</button>
+      <button class="dash-filter" data-v="v2"><span class="sq" style="background:var(--v2)"></span>V2 Salaries</button>
+      <button class="dash-filter" data-v="v3"><span class="sq" style="background:var(--v3)"></span>V3 AI Impact</button>
+      <button class="dash-filter" data-v="v4"><span class="sq" style="background:var(--v4)"></span>V4 Training</button>
+    </div>
+
+    <table class="dash-table reveal">
+      <thead>
+        <tr>
+          <th style="width: 40px;">Vec</th>
+          <th>Métrica</th>
+          <th class="num">Último</th>
+          <th class="num">Anterior</th>
+          <th class="num">Δ</th>
+          <th>Fuente</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody id="dash-body">
+        {metrics.map((m) => {
+          const cls = deltaClass(m.delta);
+          const val = deltaValue(m.delta);
+          const u = deltaUnit(m);
+          return (
+            <tr data-v={m.v}>
+              <td><span class="dash-vec"><span class="sq" style={`background:${V_CSS[m.v]}`}></span>{V_LABEL[m.v]}</span></td>
+              <td class="metric">{m.metric}</td>
+              <td class="num">{fmt(m.last, m.unit)}</td>
+              <td class="num prev">{fmt(m.prev, m.unit)}</td>
+              <td class="num">
+                <span class={`delta ${cls}`}>
+                  {cls === 'up' && (
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 1 L9 8 L1 8 Z" /></svg>
+                  )}
+                  {cls === 'down' && (
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 9 L1 2 L9 2 Z" /></svg>
+                  )}
+                  {cls === 'flat' && (
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><rect x="1" y="4" width="8" height="2" /></svg>
+                  )}
+                  {val}
+                  {u && <span style="opacity:.7;font-weight:400;margin-left:2px;">{u}</span>}
+                </span>
+              </td>
+              <td class="src">{m.src}</td>
+              <td class="date">{m.date}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+
+    <p class="dash-footnote">
+      <strong style="color: var(--ins-fg-2); font-weight: 500;">Metodología ·</strong>
+      Δ = diferencia absoluta entre la lectura actual y la inmediatamente anterior publicada de la
+      misma serie por el mismo publisher. Unidades preservadas (pp = puntos porcentuales, % = porcentaje
+      relativo). Series rolling 4-quarter cuando el publisher no declara YoY directo.
+    </p>
+  </div>
+</section>

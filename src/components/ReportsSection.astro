@@ -1,0 +1,69 @@
+---
+import { flagshipReport, reportCards } from '../data';
+---
+<section class="section" id="reports">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-kicker"><span class="num">04</span><span>Reports · The Bridge</span></div>
+        <h2 class="section-title">Lo que publicamos nosotros, con autoría.</h2>
+      </div>
+      <p class="section-aside">
+        Informes propios con datos de nuestro propio alumnado y corporate partners:
+        conversión formativa, premium post-bootcamp, adopción IA por función.
+      </p>
+    </div>
+
+    <article class="reports-hero reveal">
+      <div class="cover">
+        <div>
+          <div class="brand-mini">{flagshipReport.issueLabel}</div>
+        </div>
+        <div class="cover-title">
+          {flagshipReport.coverTitleTop}<br />
+          <em>{flagshipReport.coverTitleEm}</em>
+        </div>
+        <div class="meta-row">
+          <span>{flagshipReport.meta.date}</span>
+          <span>{flagshipReport.meta.pages}</span>
+        </div>
+      </div>
+      <div class="body">
+        <div class="section-kicker"><span class="num">{flagshipReport.sectionNum}</span><span>{flagshipReport.sectionLabel}</span></div>
+        <h3>{flagshipReport.headline}</h3>
+        <p class="authors"><strong>{flagshipReport.authors}</strong> · con el equipo de Corporate Insights</p>
+        <p class="abstract">{flagshipReport.abstract}</p>
+        <div class="tags">
+          {flagshipReport.tags.map((t) => (
+            <span class={`chip${t.vector ? ` ${t.vector}` : ''}`}>{t.label}</span>
+          ))}
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <a href={flagshipReport.pdfUrl ?? '#'} class="btn btn-primary">
+            Descargar PDF
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+            </svg>
+          </a>
+          <a href="#" class="btn btn-ghost">Ver abstract</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="reports-grid reveal d1">
+      {reportCards.map((r) => (
+        <div class={`report-card${r.comingSoon ? ' muted' : ''}`}>
+          <span class="r-date">{r.date}</span>
+          <h4 class="r-title">{r.title}</h4>
+          <p class="r-abs">{r.abstract}</p>
+          <div class="r-foot">
+            <span>{r.comingSoon ? r.state : r.pages}</span>
+            <a href={r.comingSoon ? '#subscribe' : (r.pdfUrl ?? '#')} class="r-link">
+              {r.comingSoon ? (r.state === 'Corporate partners' ? 'Contacto →' : 'Avísame') : 'PDF →'}
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,49 @@
+---
+import { methodSteps } from '../data';
+---
+<section class="section" id="method">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-kicker"><span class="num">06</span><span>Cómo lo hacemos</span></div>
+        <h2 class="section-title">Una metodología pequeña, repetible, auditable.</h2>
+      </div>
+    </div>
+
+    <div class="method">
+      <div class="method-body reveal">
+        <p>
+          Un <em>skill</em> automatizado lee cada dos semanas las fuentes que vigilamos,
+          indexa publicaciones nuevas y descarta lo que no sea <em>Tier A o B</em> publicado
+          en los últimos 15 días. El equipo editorial sintetiza y cita; ningún dato entra
+          a la página sin una URL externa verificable.
+        </p>
+        <p>
+          Clasificamos cada publicación por <em>vector</em> — V1 Demanda, V2 Salarios, V3 AI
+          Impact, V4 Training — y por <em>scope geográfico</em>. Lo que medimos en el
+          dashboard son series declaradas por los propios publishers, no agregados nuestros.
+        </p>
+        <p>
+          Cuando una fuente contradice otra, las dejamos ambas y lo explicamos en el
+          digest. No hay síntesis editorial sin contraste.
+        </p>
+        <a href="#" class="link-inline">
+          Ver skill en GitHub
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 17L17 7M9 7h8v8" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="method-steps reveal d1">
+        {methodSteps.map((s) => (
+          <div class="method-step">
+            <span class="n">{s.n}</span>
+            <span class="t">{s.title}<span class="sub">{s.sub}</span></span>
+            <span class="cadence">{s.cadence}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,259 @@
+/* ==========================================================================
+   The Bridge — Corporate Design System
+   Colors + Type tokens
+   Source of truth: _handoff/design-system/colors_and_type.css
+   Adapted for Astro: font paths → /fonts/*, Google Fonts import removed
+   (Inter Tight is loaded via <link> in src/layouts/Base.astro).
+   ========================================================================== */
+
+@font-face {
+  font-family: "Futura Std";
+  src: url("/fonts/Futura_Book_Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Futura Std";
+  src: url("/fonts/futura-std-medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+/* No Bold/Heavy licensed yet — synthesize from Medium (flag to user). */
+@font-face {
+  font-family: "Futura Std";
+  src: url("/fonts/futura-std-medium.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ---------- Core brand colors ---------- */
+  --tb-red:          rgb(239, 51, 64);
+  --tb-red-deep:     rgb(226, 43, 34);
+  --tb-red-alt:      rgb(245, 51, 63);
+  --tb-mint:         rgb(115, 255, 186);
+  --tb-green-deep:   rgb(10, 174, 93);
+  --tb-yellow:       rgb(255, 255, 0);
+  --tb-orange:       rgb(255, 99, 56);
+  --tb-blue:         rgb(70, 72, 255);
+  --tb-cyan:         rgb(145, 243, 243);
+
+  /* ---------- Neutral scale ---------- */
+  --tb-black:        rgb(0, 0, 0);
+  --tb-ink:          rgb(17, 17, 17);
+  --tb-near-black:   rgb(10, 10, 10);
+  --tb-01:           rgb(5, 5, 5);
+  --tb-grey-900:     rgb(19, 24, 34);
+  --tb-grey-800:     rgb(34, 41, 50);
+  --tb-grey-700:     rgb(46, 53, 61);
+  --tb-grey-600:     rgb(57, 57, 57);
+  --tb-grey-500:     rgb(95, 100, 105);
+  --tb-grey-400:     rgb(139, 146, 150);
+  --tb-grey-300:     rgb(183, 186, 188);
+  --tb-grey-200:     rgb(217, 217, 217);
+  --tb-grey-150:     rgb(205, 205, 205);
+  --tb-grey-100:     rgb(241, 241, 241);
+  --tb-grey-75:      rgb(245, 245, 245);
+  --tb-off-white:    rgb(250, 250, 250);
+  --tb-paper:        rgb(251, 251, 251);
+  --tb-white:        rgb(255, 255, 255);
+
+  /* ---------- Dark editorial overrides (Insights landing) ---------- */
+  --ins-bg:        #0a0a0a;
+  --ins-bg-2:      #0e0e0f;
+  --ins-surface:   #131314;
+  --ins-surface-2: #181819;
+  --ins-line:      rgba(255,255,255,0.10);
+  --ins-line-2:    rgba(255,255,255,0.06);
+  --ins-fg:        #fafafa;
+  --ins-fg-2:      #a7a7ac;
+  --ins-fg-3:      #6a6a70;
+
+  /* Vector accents */
+  --v1: #3b82f6;   /* demand */
+  --v2: #f97316;   /* salaries */
+  --v3: #a855f7;   /* ai impact */
+  --v4: #22c55e;   /* training */
+
+  /* ---------- Semantic: foreground/background ---------- */
+  --bg:              var(--tb-paper);
+  --bg-inverse:      var(--tb-ink);
+  --bg-surface:      var(--tb-grey-100);
+  --bg-elev:         var(--tb-white);
+  --fg:              var(--tb-ink);
+  --fg-muted:        var(--tb-grey-600);
+  --fg-subtle:       var(--tb-grey-400);
+  --fg-on-dark:      var(--tb-white);
+  --fg-on-dark-mute: var(--tb-grey-75);
+  --fg-on-dark-sub:  var(--tb-grey-300);
+
+  /* ---------- Semantic: accents ---------- */
+  --accent:          var(--tb-red);
+  --accent-on:       var(--tb-white);
+  --accent-alt:      var(--tb-mint);
+  --accent-alt-on:   var(--tb-black);
+  --mint:            var(--tb-mint);
+
+  /* ---------- Shadows ---------- */
+  --shadow-card:     0 4px 30px rgba(81, 81, 81, 0.16);
+  --shadow-soft:     0 2px 12px rgba(117, 117, 117, 0.16);
+
+  /* ---------- Radii ---------- */
+  --r-xs:  4px;
+  --r-sm:  6px;
+  --r-md:  8px;
+  --r-lg:  10px;
+  --r-xl:  12px;
+  --r-2xl: 16px;
+  --r-pill: 999px;
+
+  /* ---------- Spacing (8pt baseline) ---------- */
+  --s-1:  4px;
+  --s-2:  8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  20px;
+  --s-6:  24px;
+  --s-7:  32px;
+  --s-8:  40px;
+  --s-9:  48px;
+  --s-10: 56px;
+  --s-11: 64px;
+  --s-12: 88px;
+
+  /* ---------- Typography families ---------- */
+  --font-display: "Inter Tight", "PP Neue Montreal", "Neue Montreal", system-ui, sans-serif;
+  --font-sans:    "Futura Std", "Futura", "Century Gothic", system-ui, sans-serif;
+
+  /* ---------- Weights ---------- */
+  --w-book:   400;
+  --w-medium: 500;
+  --w-bold:   700;
+  --w-heavy:  800;
+
+  /* ---------- Type scale ---------- */
+  --fs-xxs: 8px;
+  --fs-xs:  9px;
+  --fs-sm:  11px;
+  --fs-md:  13px;
+  --fs-base:14px;
+  --fs-lg:  16px;
+  --fs-xl:  18px;
+  --fs-2xl: 24px;
+  --fs-3xl: 32px;
+  --fs-4xl: 40px;
+  --fs-5xl: 48px;
+  --fs-6xl: 75px;
+  --fs-7xl: 104px;
+
+  /* ---------- Line heights ---------- */
+  --lh-tight:   1.0;
+  --lh-snug:    1.15;
+  --lh-normal:  1.4;
+  --lh-relaxed: 1.55;
+
+  /* ---------- Motion ---------- */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* ---------- Semantic text roles ---------- */
+.tb-display-xxl {
+  font-family: var(--font-display);
+  font-weight: var(--w-medium);
+  font-size: clamp(64px, 10vw, 104px);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.015em;
+  color: var(--fg-on-dark);
+}
+.tb-display-xl {
+  font-family: var(--font-display);
+  font-weight: var(--w-medium);
+  font-size: 75px;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+}
+.tb-display-lg {
+  font-family: var(--font-display);
+  font-weight: var(--w-medium);
+  font-size: 48px;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.005em;
+}
+.tb-h1, .tb-display-md {
+  font-family: var(--font-sans);
+  font-weight: var(--w-bold);
+  font-size: 40px;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.005em;
+}
+.tb-h2 {
+  font-family: var(--font-sans);
+  font-weight: var(--w-bold);
+  font-size: 33.6px;
+  line-height: var(--lh-tight);
+}
+.tb-h3 {
+  font-family: var(--font-display);
+  font-weight: var(--w-medium);
+  font-size: 24px;
+  line-height: var(--lh-snug);
+}
+.tb-h4 {
+  font-family: var(--font-sans);
+  font-weight: var(--w-medium);
+  font-size: 18px;
+  line-height: var(--lh-snug);
+}
+.tb-body {
+  font-family: var(--font-sans);
+  font-weight: var(--w-book);
+  font-size: 14px;
+  line-height: var(--lh-relaxed);
+  color: var(--fg);
+}
+.tb-body-sm {
+  font-family: var(--font-sans);
+  font-weight: var(--w-book);
+  font-size: 13px;
+  line-height: var(--lh-relaxed);
+  color: var(--fg);
+}
+.tb-caption {
+  font-family: var(--font-sans);
+  font-weight: var(--w-book);
+  font-size: 11px;
+  line-height: var(--lh-normal);
+  color: var(--fg-muted);
+}
+.tb-eyebrow {
+  font-family: var(--font-sans);
+  font-weight: var(--w-medium);
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.tb-meta {
+  font-family: var(--font-display);
+  font-weight: var(--w-book);
+  font-size: 8px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--fg-on-dark-sub);
+}
+.tb-stat {
+  font-family: var(--font-sans);
+  font-weight: var(--w-bold);
+  font-size: 40px;
+  line-height: var(--lh-tight);
+}
+.tb-stat-sm {
+  font-family: var(--font-sans);
+  font-weight: var(--w-bold);
+  font-size: 32px;
+  line-height: var(--lh-tight);
+}
