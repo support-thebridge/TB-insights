@@ -12,8 +12,8 @@ export default {
           line:       'rgba(255,255,255,0.10)',
           'line-2':   'rgba(255,255,255,0.06)',
           fg:         '#fafafa',
-          'fg-2':     '#a7a7ac',
-          'fg-3':     '#6a6a70',
+          'fg-2':     '#b3b3b9',
+          'fg-3':     '#8b8b94',
         },
         v: {
           1: '#3b82f6',
