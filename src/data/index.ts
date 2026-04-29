@@ -53,9 +53,9 @@ const STATIC_FRAMING = {
     'Leemos, filtramos y sintetizamos cada quincena los informes que definen el mercado laboral tecnológico. Una tesis por ciclo, cuatro vectores, una fuente citable.',
   liveReadout: {
     label: 'Última lectura',
-    value: 'Global tech NEO',
-    valueAccent: '+9pp YoY',
-    source: 'ManpowerGroup · Employment Outlook Q2 2026',
+    value: 'IA en el payroll EE.UU.',
+    valueAccent: '−16k empleos/mes',
+    source: 'Goldman Sachs · How will AI affect the US labor market, abril 2026',
   },
   sectionHeadline: 'Lo que leyó el equipo, reducido a una tesis.',
   findings: [
@@ -81,18 +81,18 @@ const STATIC_FRAMING = {
     },
     {
       vector: 'v3' as const,
-      stat: '39',
-      statUnit: '% puestos',
+      stat: '50–55',
+      statUnit: '% empleos',
       finding:
-        'OCDE revisa al alza la exposición: 39% de los empleos en economías avanzadas están afectados.',
+        'BCG cuantifica el techo del “reshape vs. replace”: 50–55% de los empleos en EE.UU. serán reconfigurados por la IA en 2–3 años.',
       body:
-        '28% complementariedad (augmentation), 11% sustitución. Knowledge workers sin reconversión son el segmento con mayor riesgo de desplazamiento a 24 meses.',
-      sourceLabel: 'OECD — Employment Outlook 2026, cap. 3',
+        'Solo 10–15% serán eliminados a 5 años. Triangula con Goldman Sachs (−16k empleos/mes en EE.UU.) y McKinsey (uso IA en el trabajo 30%→76%): el efecto agregado es real pero pequeño; lo que predomina es la reconfiguración del puesto, no su sustitución.',
+      sourceLabel: 'BCG — AI Will Reshape More Jobs Than It Replaces, abril 2026',
     },
   ] as BiweeklyDigest['findings'],
   callout: {
     tag: 'So what para Bridge',
-    text: 'La demanda que crece ya no es “un dev más” — es un profesional con agencia sobre herramientas IA. Nuestro bootcamp V4 (Apply) es exactamente esa unidad de conversión.',
+    text: 'Cuatro fuentes Tier A convergen este ciclo — Goldman, BCG, McKinsey e Indeed: el daño se concentra en juniors y tareas substituibles, no en seniors AI-augmentados. Nuestro bootcamp V4 (Apply) entrena exactamente la unidad que crece.',
     linkLabel: 'Ver full state',
   },
 };
