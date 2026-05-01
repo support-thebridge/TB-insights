@@ -1,5 +1,6 @@
 ---
 import { libraryMeta, publications } from '../data';
+import { slugify } from '../lib/slug';
 
 const V_LABEL: Record<string, string> = { v1: 'V1', v2: 'V2', v3: 'V3', v4: 'V4' };
 ---
@@ -56,7 +57,7 @@ const V_LABEL: Record<string, string> = { v1: 'V1', v2: 'V2', v3: 'V3', v4: 'V4'
 
     <div class="lib-list reveal">
       {publications.map((p) => (
-        <div class="lib-row">
+        <div class="lib-row" id={`pub-${slugify(p.title)}`}>
           <div>
             {p.url ? (
               <a href={p.url} class="lib-title" target="_blank" rel="noopener">{p.title}</a>

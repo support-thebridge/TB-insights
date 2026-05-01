@@ -30,6 +30,7 @@
  */
 
 import { Client } from '@notionhq/client';
+import { slugify } from './slug';
 import type {
   BiweeklyNotionData,
   Callout,
@@ -282,7 +283,10 @@ function mapBiweekly(
  * retrieve or that lack the expected properties — partial findings drop the
  * whole set later (composer falls back to STATIC_FRAMING when length ≠ 3).
  */
-async function fetchFindingsByIds(ids: string[]): Promise<DigestFinding[]> {
+async function fetchFindingsByIds(
+  ids: string[],
+  pubsById: Map<string, Publication>,
+): Promise<DigestFinding[]> {
   if (ids.length === 0) return [];
   const out: DigestFinding[] = [];
   for (const id of ids) {
@@ -307,6 +311,18 @@ async function fetchFindingsByIds(ids: string[]): Promise<DigestFinding[]> {
       console.warn(`  ! Findings: page ${id} is missing required fields, skipping`);
       continue;
     }
+
+    // Optional Publication relation → first hit only. The library renders one
+    // anchor per pub, and finding cards quote a single primary source; if the
+    // editor links multiple, we use the first.
+    let sourcePubSlug: string | undefined;
+    const pubRel = (p['Publication'] as { relation?: Array<{ id: string }> } | undefined)?.relation;
+    if (pubRel && pubRel.length > 0) {
+      const pub = pubsById.get(pubRel[0].id);
+      if (pub) sourcePubSlug = slugify(pub.title);
+      else console.warn(`  ! Findings: ${id} links Publication ${pubRel[0].id} which is not in pubsById`);
+    }
+
     out.push({
       vector: toVector(vectorRaw, 'Findings.Vector'),
       stat,
@@ -315,6 +331,7 @@ async function fetchFindingsByIds(ids: string[]): Promise<DigestFinding[]> {
       body,
       sourceLabel,
       ...(sourceUrl ? { sourceUrl } : {}),
+      ...(sourcePubSlug ? { sourcePubSlug } : {}),
     });
   }
   return out;
@@ -380,7 +397,7 @@ export async function fetchLatestBiweekly(
   );
 
   if (findingIds.length > 0) {
-    const findings = await fetchFindingsByIds(findingIds);
+    const findings = await fetchFindingsByIds(findingIds, pubsById);
     if (findings.length > 0) {
       data.editorial = { ...(data.editorial ?? {}), findings };
     }

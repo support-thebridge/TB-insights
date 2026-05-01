@@ -29,7 +29,13 @@ const vectorLabels: Record<string, string> = {
           <h3 class="digest-finding">{f.finding}</h3>
           <p class="digest-body">{f.body}</p>
           <div class="digest-cite">
-            Fuente · <a href={f.sourceUrl ?? '#'}>{f.sourceLabel}</a>
+            Fuente · {f.sourcePubSlug ? (
+              <a href={`#pub-${f.sourcePubSlug}`} data-anchor>{f.sourceLabel}</a>
+            ) : f.sourceUrl ? (
+              <a href={f.sourceUrl} target="_blank" rel="noopener">{f.sourceLabel}</a>
+            ) : (
+              <span>{f.sourceLabel}</span>
+            )}
           </div>
         </article>
       ))}

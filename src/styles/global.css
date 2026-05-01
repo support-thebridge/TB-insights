@@ -8,6 +8,8 @@
    ========================================================================== */
 
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 html, body { margin: 0; padding: 0; background: var(--ins-bg); color: var(--ins-fg); }
 body {
   font-family: var(--font-sans);
@@ -180,9 +182,9 @@ a { color: inherit; text-decoration: none; }
 /* ---------- Digest ---------- */
 .digest-headline {
   font-family: var(--font-display);
-  font-size: clamp(30px, 3.6vw, 48px);
-  font-weight: 500; line-height: 1.08; letter-spacing: -0.02em;
-  max-width: 22ch; margin: 0 0 72px;
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 500; line-height: 1.32; letter-spacing: -0.01em;
+  max-width: 46ch; margin: 0 0 72px;
   color: var(--ins-fg);
 }
 .digest-headline em { color: var(--mint); font-style: normal; }
@@ -436,8 +438,20 @@ a { color: inherit; text-decoration: none; }
   gap: 20px; align-items: center;
   padding: 20px 4px; border-bottom: 1px solid var(--ins-line-2);
   transition: background .15s var(--ease);
+  scroll-margin-top: 88px;
 }
 .lib-row:hover { background: rgba(255,255,255,0.02); }
+.lib-row:target {
+  background: color-mix(in oklab, var(--mint) 12%, transparent);
+  animation: lib-row-flash 1.6s var(--ease) 0.2s both;
+}
+@keyframes lib-row-flash {
+  0%   { background: color-mix(in oklab, var(--mint) 22%, transparent); }
+  100% { background: rgba(255,255,255,0.02); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lib-row:target { animation: none; }
+}
 @media (max-width: 1080px) {
   .lib-row { grid-template-columns: 1fr; gap: 10px; padding: 22px 4px; }
   .lib-row .lib-cell-hide-sm { display: none; }

@@ -34,6 +34,14 @@ export interface DigestFinding {
   body: string;
   sourceLabel: string;
   sourceUrl?: string;
+  /**
+   * Slug of the source Publication's title, when the Finding's `Publication`
+   * relation in Notion resolves to a row in the live Publications DB. The
+   * digest card renders an in-page anchor `#pub-<slug>` and the library row
+   * carries the matching id. Absent when the finding has no relation set or
+   * the relation points at an unknown publication.
+   */
+  sourcePubSlug?: string;
 }
 
 /**
