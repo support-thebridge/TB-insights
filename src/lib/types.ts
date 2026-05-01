@@ -36,23 +36,51 @@ export interface DigestFinding {
   sourceUrl?: string;
 }
 
+/**
+ * Inline rich-text node for the hero H1. Maps Notion annotations:
+ *   bold      → em (red accent, .em class)
+ *   underline → u  (mint underline, .u class)
+ * `\n` in Notion plain_text becomes a separate `{ type: 'br' }` node.
+ */
+export type ThesisNode =
+  | { type: 'text'; text: string; em?: boolean; u?: boolean }
+  | { type: 'br' };
+
+export interface LiveReadout {
+  label: string;
+  value: string;
+  valueAccent?: string;
+  source: string;
+}
+
+export interface Callout {
+  tag: string;
+  text: string;
+  linkLabel: string;
+  linkUrl?: string;
+}
+
 export interface BiweeklyDigest {
   issue: number;
   dateLabel: string;
-  thesisHeadline: string;
+  thesisHeadline: ThesisNode[];
   thesisSub: string;
-  liveReadout: { label: string; value: string; valueAccent?: string; source: string };
+  liveReadout: LiveReadout;
   sectionHeadline: string;
   sectionAside: string;
   digestHeadline: string;
   findings: [DigestFinding, DigestFinding, DigestFinding];
-  callout: { tag: string; text: string; linkLabel: string; linkUrl?: string };
+  callout: Callout;
 }
 
 /**
  * Narrow shape of what Notion actually provides for one Biweekly cycle.
  * Composed with static editorial framing in `src/data/index.ts` to produce a
  * full `BiweeklyDigest` for components.
+ *
+ * The optional `editorial` block carries fields that recently moved from
+ * STATIC_FRAMING into Notion. Any field absent in Notion falls back to
+ * STATIC_FRAMING per-field at compose time.
  */
 export interface BiweeklyNotionData {
   issue: number;
@@ -62,6 +90,12 @@ export interface BiweeklyNotionData {
   publicationsAdded: number;
   vectorsCovered: VectorKey[];
   citedPublications: Array<{ title: string; url?: string }>;
+  editorial?: {
+    thesisHeadline?: ThesisNode[];
+    liveReadout?: Partial<LiveReadout>;
+    callout?: Partial<Callout>;
+    findings?: DigestFinding[];
+  };
 }
 
 export interface FlagshipReport {

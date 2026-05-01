@@ -11,8 +11,12 @@ import { digest } from '../data';
     <span class="eyebrow"><span class="dot"></span>Insight #{String(digest.issue).padStart(2, '0')} · {digest.dateLabel}</span>
 
     <h1 class="thesis reveal">
-      El empleo tech ya no sube en bloque.<br />
-      Se <span class="em">bifurca</span> por <span class="u">exposición a la IA</span>.
+      {digest.thesisHeadline.map((node) => (
+        node.type === 'br' ? <br /> :
+        node.em ? <span class="em">{node.text}</span> :
+        node.u ? <span class="u">{node.text}</span> :
+        <Fragment>{node.text}</Fragment>
+      ))}
     </h1>
 
     <p class="thesis-sub reveal d1">{digest.thesisSub}</p>

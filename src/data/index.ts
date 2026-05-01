@@ -15,11 +15,15 @@
 import type {
   BiweeklyDigest,
   BiweeklyNotionData,
+  Callout,
+  DigestFinding,
   FlagshipReport,
+  LiveReadout,
   Metric,
   MethodStep,
   Publication,
   ReportCard,
+  ThesisNode,
 } from '../lib/types';
 
 import digestJson from './latest-digest.json';
@@ -45,10 +49,20 @@ function formatDateLabel(isoDate: string, issue: number): string {
   return `Quincena ${issue} — ${fmt.format(d)}`;
 }
 
-// Editorial framing that Notion does not yet own. Edit in code until the
-// Biweekly DB schema is extended.
+// Editorial framing fallback. Used per-field when Notion does not provide a
+// value. The Biweekly DB now owns: thesisHeadline (rich text), liveReadout (4
+// fields), callout (3 fields), and findings (relation → Findings DB). Until
+// those columns are populated, these defaults render.
 const STATIC_FRAMING = {
-  thesisHeadline: 'El empleo tech ya no sube en bloque. Se bifurca por exposición a la IA.',
+  thesisHeadline: [
+    { type: 'text', text: 'El empleo tech ya no sube en bloque.' },
+    { type: 'br' },
+    { type: 'text', text: 'Se ' },
+    { type: 'text', text: 'bifurca', em: true },
+    { type: 'text', text: ' por ' },
+    { type: 'text', text: 'exposición a la IA', u: true },
+    { type: 'text', text: '.' },
+  ] as ThesisNode[],
   thesisSub:
     'Leemos, filtramos y sintetizamos cada quincena los informes que definen el mercado laboral tecnológico. Una tesis por ciclo, cuatro vectores, una fuente citable.',
   liveReadout: {
@@ -56,8 +70,8 @@ const STATIC_FRAMING = {
     value: 'IA en el payroll EE.UU.',
     valueAccent: '−16k empleos/mes',
     source: 'Goldman Sachs · How will AI affect the US labor market, abril 2026',
-  },
-  sectionHeadline: 'Lo que leyó el equipo, reducido a una tesis.',
+  } as LiveReadout,
+  sectionHeadline: 'Tres hallazgos, una tesis.',
   findings: [
     {
       vector: 'v1' as const,
@@ -94,20 +108,49 @@ const STATIC_FRAMING = {
     tag: 'So what para Bridge',
     text: 'Cuatro fuentes Tier A convergen este ciclo — Goldman, BCG, McKinsey e Indeed: el daño se concentra en juniors y tareas substituibles, no en seniors AI-augmentados. Nuestro bootcamp V4 (Apply) entrena exactamente la unidad que crece.',
     linkLabel: 'Ver full state',
-  },
+  } as Callout,
 };
+
+// ---------- per-field merge: Notion overrides STATIC_FRAMING ----------
+
+const editorial = notionDigest.editorial ?? {};
+
+const liveReadout: LiveReadout = {
+  ...STATIC_FRAMING.liveReadout,
+  ...(editorial.liveReadout ?? {}),
+};
+
+const callout: Callout = {
+  ...STATIC_FRAMING.callout,
+  ...(editorial.callout ?? {}),
+};
+
+// Findings is all-or-nothing: the layout assumes exactly 3 cards (V1/V2/V3).
+// If Notion delivers a partial set we fall back to STATIC_FRAMING entirely
+// rather than mixing — a half-populated row would look broken.
+let findings: BiweeklyDigest['findings'] = STATIC_FRAMING.findings;
+const notionFindings = editorial.findings;
+if (notionFindings) {
+  if (notionFindings.length === 3) {
+    findings = notionFindings as [DigestFinding, DigestFinding, DigestFinding];
+  } else {
+    console.warn(
+      `  ! Findings: Notion provided ${notionFindings.length}, expected 3. Falling back to static.`,
+    );
+  }
+}
 
 export const digest: BiweeklyDigest = {
   issue: notionDigest.issue,
   dateLabel: formatDateLabel(notionDigest.cycleDate, notionDigest.issue),
-  thesisHeadline: STATIC_FRAMING.thesisHeadline,
+  thesisHeadline: editorial.thesisHeadline ?? STATIC_FRAMING.thesisHeadline,
   thesisSub: STATIC_FRAMING.thesisSub,
-  liveReadout: STATIC_FRAMING.liveReadout,
+  liveReadout,
   sectionHeadline: STATIC_FRAMING.sectionHeadline,
   sectionAside: `En este ciclo ${notionDigest.publicationsAdded} publicaciones nuevas pasaron el filtro de frescura y tier. Los hallazgos seleccionados cubren los vectores ${notionDigest.vectorsCovered.map((v) => v.toUpperCase()).join(', ')}.`,
   digestHeadline: notionDigest.mostImportantDelta,
-  findings: STATIC_FRAMING.findings,
-  callout: STATIC_FRAMING.callout,
+  findings,
+  callout,
 };
 
 export const citedPublications = notionDigest.citedPublications;

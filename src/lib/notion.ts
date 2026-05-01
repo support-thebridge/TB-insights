@@ -32,7 +32,11 @@
 import { Client } from '@notionhq/client';
 import type {
   BiweeklyNotionData,
+  Callout,
+  DigestFinding,
+  LiveReadout,
   Publication,
+  ThesisNode,
   Tier,
   VectorKey,
 } from './types';
@@ -85,6 +89,53 @@ function richText(props: NotionProperties, name: string, required = true): strin
   return s;
 }
 
+/**
+ * Optional rich-text reader. Returns undefined when the column is missing or
+ * empty — never throws. Use for columns that may not yet exist in the schema.
+ */
+function richTextOptional(props: NotionProperties, name: string): string | undefined {
+  const p = props[name] as { rich_text?: unknown } | undefined;
+  if (!p) return undefined;
+  const s = richTextToString(p.rich_text).trim();
+  return s || undefined;
+}
+
+/**
+ * Map a Notion rich_text array into ThesisNode[] runs. Splits plain_text on
+ * `\n` to emit explicit `{ type: 'br' }` nodes. Returns undefined when the
+ * column is missing or empty.
+ *
+ * Annotation mapping: bold → em, underline → u. Other annotations (italic,
+ * strikethrough, code, color) are ignored — the H1 is intentionally minimal.
+ */
+function richTextNodesOptional(
+  props: NotionProperties,
+  name: string,
+): ThesisNode[] | undefined {
+  const p = props[name] as { rich_text?: unknown } | undefined;
+  if (!p || !Array.isArray(p.rich_text)) return undefined;
+  const out: ThesisNode[] = [];
+  for (const node of p.rich_text as Array<any>) {
+    const raw: string = typeof node?.plain_text === 'string' ? node.plain_text : '';
+    if (!raw) continue;
+    const ann = node.annotations ?? {};
+    const em = Boolean(ann.bold);
+    const u = Boolean(ann.underline);
+    const segments = raw.split('\n');
+    segments.forEach((seg, i) => {
+      if (seg) {
+        const run: ThesisNode = { type: 'text', text: seg };
+        if (em) (run as any).em = true;
+        if (u) (run as any).u = true;
+        out.push(run);
+      }
+      if (i < segments.length - 1) out.push({ type: 'br' });
+    });
+  }
+  if (out.length === 0) return undefined;
+  return out;
+}
+
 function dateProp(props: NotionProperties, name: string): string {
   const p = prop(props, name) as { date?: { start?: string | null } | null };
   const start = p.date?.start;
@@ -114,6 +165,11 @@ function select(props: NotionProperties, name: string): string {
   const v = p.select?.name;
   if (!v) throw new Error(`Notion property "${name}" (select) is empty`);
   return v;
+}
+
+function selectOptional(props: NotionProperties, name: string): string | undefined {
+  const p = props[name] as { select?: { name: string } | null } | undefined;
+  return p?.select?.name || undefined;
 }
 
 function urlProp(props: NotionProperties, name: string): string | undefined {
@@ -164,7 +220,7 @@ function mapBiweekly(
   page: { properties: NotionProperties },
   issue: number,
   pubsById: Map<string, Publication>,
-): BiweeklyNotionData {
+): { data: BiweeklyNotionData; findingIds: string[] } {
   const p = page.properties;
   const citedIds = relationIds(p, 'Publications Cited');
   const citedPublications = citedIds
@@ -172,17 +228,96 @@ function mapBiweekly(
     .filter((x): x is Publication => Boolean(x))
     .map((pub) => ({ title: pub.title, ...(pub.url ? { url: pub.url } : {}) }));
 
+  // Optional editorial fields. The Biweekly DB columns below were added after
+  // the original schema; any may be absent in older rows or in new workspaces.
+  const thesisHeadline = richTextNodesOptional(p, 'Thesis Headline');
+  const liveLabel = richTextOptional(p, 'Live Readout Label');
+  const liveValue = richTextOptional(p, 'Live Readout Value');
+  const liveAccent = richTextOptional(p, 'Live Readout Value Accent');
+  const liveSource = richTextOptional(p, 'Live Readout Source');
+  const calloutTag = richTextOptional(p, 'Callout Tag');
+  const calloutText = richTextOptional(p, 'Callout Text');
+  const calloutLink = richTextOptional(p, 'Callout Link Label');
+
+  const liveReadout: Partial<LiveReadout> = {};
+  if (liveLabel) liveReadout.label = liveLabel;
+  if (liveValue) liveReadout.value = liveValue;
+  if (liveAccent) liveReadout.valueAccent = liveAccent;
+  if (liveSource) liveReadout.source = liveSource;
+
+  const callout: Partial<Callout> = {};
+  if (calloutTag) callout.tag = calloutTag;
+  if (calloutText) callout.text = calloutText;
+  if (calloutLink) callout.linkLabel = calloutLink;
+
+  const editorial: NonNullable<BiweeklyNotionData['editorial']> = {};
+  if (thesisHeadline) editorial.thesisHeadline = thesisHeadline;
+  if (Object.keys(liveReadout).length > 0) editorial.liveReadout = liveReadout;
+  if (Object.keys(callout).length > 0) editorial.callout = callout;
+
+  // Findings is a relation to a separate DB; both the column and that DB are
+  // optional. Resolution happens after mapBiweekly so it can be async.
+  const findingsProp = p['Findings'] as { relation?: Array<{ id: string }> } | undefined;
+  const findingIds = (findingsProp?.relation ?? []).map((r) => r.id);
+
   return {
-    issue,
-    cycleDate: title(p, 'Cycle Date'),
-    digestSummary: richText(p, 'Digest Summary'),
-    mostImportantDelta: richText(p, 'Most Important Delta'),
-    publicationsAdded: numberProp(p, 'Publications Added'),
-    vectorsCovered: requiredMultiSelect(p, 'Vectors Covered').map((v) =>
-      toVector(v, 'Biweekly.Vectors Covered'),
-    ),
-    citedPublications,
+    data: {
+      issue,
+      cycleDate: title(p, 'Cycle Date'),
+      digestSummary: richText(p, 'Digest Summary'),
+      mostImportantDelta: richText(p, 'Most Important Delta'),
+      publicationsAdded: numberProp(p, 'Publications Added'),
+      vectorsCovered: requiredMultiSelect(p, 'Vectors Covered').map((v) =>
+        toVector(v, 'Biweekly.Vectors Covered'),
+      ),
+      citedPublications,
+      ...(Object.keys(editorial).length > 0 ? { editorial } : {}),
+    },
+    findingIds,
   };
+}
+
+/**
+ * Resolve Finding pages by ID in the order given. Skips IDs that fail to
+ * retrieve or that lack the expected properties — partial findings drop the
+ * whole set later (composer falls back to STATIC_FRAMING when length ≠ 3).
+ */
+async function fetchFindingsByIds(ids: string[]): Promise<DigestFinding[]> {
+  if (ids.length === 0) return [];
+  const out: DigestFinding[] = [];
+  for (const id of ids) {
+    let page: any;
+    try {
+      page = await client().pages.retrieve({ page_id: id });
+    } catch (err) {
+      console.warn(`  ! Findings: failed to retrieve ${id}: ${err instanceof Error ? err.message : err}`);
+      continue;
+    }
+    if (!page || !('properties' in page)) continue;
+    const p = page.properties as NotionProperties;
+    const vectorRaw = selectOptional(p, 'Vector');
+    const stat = richTextOptional(p, 'Stat');
+    const statUnit = richTextOptional(p, 'Stat Unit');
+    const finding = richTextOptional(p, 'Finding');
+    const body = richTextOptional(p, 'Body');
+    const sourceLabel = richTextOptional(p, 'Source Label');
+    const sourceUrl = urlProp(p, 'Source URL');
+
+    if (!vectorRaw || !stat || !statUnit || !finding || !body || !sourceLabel) {
+      console.warn(`  ! Findings: page ${id} is missing required fields, skipping`);
+      continue;
+    }
+    out.push({
+      vector: toVector(vectorRaw, 'Findings.Vector'),
+      stat,
+      statUnit,
+      finding,
+      body,
+      sourceLabel,
+      ...(sourceUrl ? { sourceUrl } : {}),
+    });
+  }
+  return out;
 }
 
 // ---------- public API ----------
@@ -238,9 +373,18 @@ export async function fetchLatestBiweekly(
     throw new Error('Biweekly DB has no rows with Status = Published');
   }
 
-  return mapBiweekly(
+  const { data, findingIds } = mapBiweekly(
     published[0] as unknown as { properties: NotionProperties },
     published.length,
     pubsById,
   );
+
+  if (findingIds.length > 0) {
+    const findings = await fetchFindingsByIds(findingIds);
+    if (findings.length > 0) {
+      data.editorial = { ...(data.editorial ?? {}), findings };
+    }
+  }
+
+  return data;
 }
