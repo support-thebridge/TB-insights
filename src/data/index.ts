@@ -20,7 +20,6 @@ import type {
   FlagshipReport,
   LiveReadout,
   Metric,
-  MethodStep,
   Publication,
   ReportCard,
   ThesisNode,
@@ -218,15 +217,6 @@ export const reportCards: ReportCard[] = [
     comingSoon: true,
     state: 'Corporate partners',
   },
-];
-
-export const methodSteps: MethodStep[] = [
-  { n: '01', title: 'Ingesta', sub: 'Web scraping + RSS + búsqueda semántica en 42 fuentes vigiladas.', cadence: 'Diario' },
-  { n: '02', title: 'Filtro de frescura', sub: 'Descartamos lo publicado hace más de 15 días salvo datos de referencia.', cadence: 'Auto' },
-  { n: '03', title: 'Tiering A / B / C', sub: 'A: datos primarios de un publisher oficial. B: análisis de think-tank / big4. C: opinión.', cadence: 'Editorial' },
-  { n: '04', title: 'Clasificación por vector', sub: 'Cada publicación etiquetada V1–V4 y con country scope multi.', cadence: 'Editorial' },
-  { n: '05', title: 'Síntesis quincenal', sub: 'Una tesis dominante, tres hallazgos citados, un “so what” accionable.', cadence: 'Quincenal' },
-  { n: '06', title: 'Publicación', sub: 'Notion → ISR en 15min → email a suscriptores.', cadence: 'Quincenal' },
 ];
 
 export const libraryMeta = {

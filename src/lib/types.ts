@@ -130,9 +130,3 @@ export interface ReportCard {
   state?: string;
 }
 
-export interface MethodStep {
-  n: string;
-  title: string;
-  sub: string;
-  cadence: string;
-}
